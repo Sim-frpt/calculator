@@ -1,0 +1,85 @@
+/*Reset button styles.*/
+/*It takes a bit of work to achieve a neutral look.*/
+button {
+  padding: 0;
+  border: none;
+  font: inherit;
+  color: inherit;
+  background-color: transparent;
+  /* show a hand cursor on hover; some argue that we
+  /* should keep the default arrow cursor for buttons */
+  cursor: pointer;
+}
+
+.calculator{
+  margin: 2em auto;
+  width: 30%;
+  background: darkgrey;
+}
+
+.calculator__display {
+  margin: auto;
+  background: red;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.calculator__display__text{
+  background: lightgrey;
+  height: 4em;
+  line-height: 4em;
+  margin: 1em;
+}
+
+.calculator__button {
+  background: white;
+  border-radius: 10px;
+}
+
+.calculator__buttons {
+  text-align: center;
+  margin: 2em auto;
+  padding: 1em;
+}
+
+.calculator__button--clear {
+  width: 40%;
+  padding: 0.5em;
+  height: 3em;
+}
+
+.clear {
+  margin: 1em auto;
+}
+
+.calculator__numbers {
+  width: 75%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.numbers__row {
+  margin: 1em;
+  display: flex;
+  justify-content: space-around;
+}
+
+.calculator__button--number {
+  width: 25%; 
+  height: 3em;
+  line-height: 3em;
+  border-radius: 100px;
+}
+
+.calculator__operators {
+  display: flex;
+  justify-content: space-around;
+  margin: 1em;
+}
+
+.calculator__button--operator {
+  width: 15%;
+  height: 3em;
+}
