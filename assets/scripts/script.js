@@ -1,16 +1,20 @@
-const display         = document.getElementsByClassName( "calculator__text--bottom" )[0];
-const numberButtons   = document.getElementsByClassName( "calculator__button--number" );
-const operatorButtons = document.getElementsByClassName( "calculator__button--operator" );
-const equalButton     = document.getElementsByClassName( "calculator__button--equal" )[0];
-const clearButton     = document.getElementsByClassName( "calculator__button--clear" )[0]; 
-const decimalPoint    = document.getElementsByClassName( "calculator__button--dot" )[0];
-const undoButton      = document.getElementsByClassName( "calculator__button--undo" )[0];
+const currentOperation = document.getElementsByClassName( "calculator__text--bottom" )[0];
+const history          = document.getElementsByClassName( "calculator__text--top" )[0]; 
+const numberButtons    = document.getElementsByClassName( "calculator__button--number" );
+const operatorButtons  = document.getElementsByClassName( "calculator__button--operator" );
+const equalButton      = document.getElementsByClassName( "calculator__button--equal" )[0];
+const clearButton      = document.getElementsByClassName( "calculator__button--clear" )[0]; 
+const decimalPoint     = document.getElementsByClassName( "calculator__button--dot" )[0];
+const undoButton       = document.getElementsByClassName( "calculator__button--undo" )[0];
+
+const booleans = {
+  numberEntered : false,
+  errorMessage : false,
+  remainder: false,
+};
 
 let operands        = '';
 let operations      = [];
-let numberEntered   = false;
-let errorMessage    = false;
-let remainder       = false;
 let displayValue    = '';
 
 const mathOperations = { 
@@ -34,8 +38,8 @@ const mathOperations = {
 
   divide( a, b ) {
     if ( parseInt( b ) === 0 ) {
-      errorMessage = true;
-      errorText = "please don't divide by 0 dude";
+      booleans.errorMessage = true;
+      errorText = "nope";
       return handleError( errorText );
     }
     let result = ( a ) / ( b );
@@ -50,7 +54,7 @@ const operate = ( operator, a, b ) => {
 
 const handleError = text => {
   displayValue = '';
-  display.textContent = text;
+  currentOperation.textContent = text;
 };
 
 const displayNumber = event => {
@@ -62,34 +66,31 @@ const displayNumber = event => {
     text = event.target.textContent; 
   }
 
-  numberEntered = true;
+  booleans.numberEntered = true;
 
-  if ( remainder ) {
-    remainder = false;
+  if ( booleans.remainder ) {
+    booleans.remainder = false;
     operands  = '';
     displayValue = '';
-    display.textContent = displayValue;
+    currentOperation.textContent = displayValue;
+    history.textContent = '';
   }
 
   operands += text;
 
-  if ( errorMessage ) {
-    display.textContent = '';
-    errorMessage = false;
-  }
-
   displayValue += text;
-  display.textContent = displayValue;
+  currentOperation.textContent = operands;
+  history.textContent = displayValue;
 };
 
 const registerOperator = event => {
-  if ( ! numberEntered ) {
+  if ( ! booleans.numberEntered ) {
     return;
   } 
 
   // means that if the user enters an operator after he has aleady received a result, the result will stay and become the first operand.
   // On the contrary, if the user enters another digit, we discard the previous result and start fresh
-  remainder = false;  
+  booleans.remainder = false;  
 
   let operator = '';
   let text     = '';
@@ -119,7 +120,8 @@ const registerOperator = event => {
   }
   
   displayValue += text;
-  display.textContent = displayValue;
+  currentOperation.textContent = text;
+  history.textContent = displayValue;
 
   if ( operands ) {
     operations.push( operands );
@@ -127,7 +129,7 @@ const registerOperator = event => {
 
   operations.push( operator ); 
   operands = '';
-  numberEntered = false;
+  booleans.numberEntered = false;
 };
 
 const addDecimal = event => {
@@ -152,7 +154,8 @@ const addDecimal = event => {
 
   operands += decimalSymbol;
   displayValue += decimalSymbol;
-  display.textContent = displayValue;
+  currentOperation.textContent = operands;
+  history.textContent = displayValue;
 };
 
 const performCalculation = event => {
@@ -173,20 +176,20 @@ const performCalculation = event => {
     operations = parseOperations( operations, "add", "subtract" );
   }
   
-  if ( errorMessage ) {
+  if ( booleans.errorMessage ) {
     clearAll( null, false );
     return;   
   }
 
   displayValue = operations;
-  display.textContent = displayValue;
-  operands = operations[0];
-  remainder = true;
+  currentOperation.textContent = displayValue;
+  operands = operations[0].toString( 10 );
+  booleans.remainder = true;
   operations = [];
 };   
 
 const parseOperations = ( operations, firstOp, secondOp ) => {
-  if ( errorMessage ) {
+  if ( booleans.errorMessage ) {
     return;
   }
 
@@ -204,17 +207,23 @@ const parseOperations = ( operations, firstOp, secondOp ) => {
 
 const clearAll = ( event, clearScreen = true ) => {
   if ( clearScreen ) {
-    display.textContent = '';
+    currentOperation.textContent = '';
+    history.textContent = '';
   }
 
   displayValue = '';
-  numberEntered = false;
-  errorMessage  = false;
+  booleans.numberEntered = false;
+  booleans.errorMessage  = false;
   operations    = [];
   operands      = '';
 };
 
 const removeDigit = event => {
+  // If the last element of the operations array is an operator and operations is not empty, set boolean necessary to be able to enter another operator to false
+  if ( ( ! parseFloat( operations[ operations.length -1 ] ) && operations.length !== 0 ) ) {
+    booleans.numberEntered = false;
+  }
+
   if ( displayValue === '' ) {
     clearAll();
   }
@@ -227,7 +236,8 @@ const removeDigit = event => {
 
       let newOperand = lastOperation.slice( 0, -1 ); 
       displayValue += newOperand;
-      display.textContent = displayValue;
+      currentOperation.textContent = displayValue;
+      history.textContent = displayValue;
   
       if ( newOperand.length === 0 ) {
         return;
@@ -237,14 +247,16 @@ const removeDigit = event => {
 
   // If the last operation is not a float or int, it means it's an operator and we can safely remove the operator from the displayValue ( always length of 2 );
     displayValue = displayValue.slice( 0, -1 ); 
-    display.textContent = displayValue;
+    currentOperation.textContent = displayValue;
+    history.textContent = displayValue;
   }
 
   if ( operands ) {
     displayValue = displayValue.slice( 0, - operands.length  );
     operands = operands.slice( 0, -1 );
     displayValue += operands;
-    display.textContent = displayValue;
+    currentOperation.textContent = displayValue;
+    history.textContent = displayValue;
   }
 };
 
