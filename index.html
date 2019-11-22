@@ -3,17 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="assets/styles/style.css">
+  <link href="https://fonts.googleapis.com/css?family=Ubuntu:500,700&display=swap" rel="stylesheet">
   <title>Calculator</title>
 </head>
 <body>
   <div class="calculator">
-    <div class="calculator__display">
-      <p class="calculator__display__text"></p>
+    <div class="calculator__screen">
+      <p class="calculator__text--top">234</p>
+      <p class="calculator__text--bottom">1214</p>
     </div>                                   
     <div class="calculator__body">
       <div class="calculator__buttons">        
         <div class="clear">                    
-          <button class="calculator__button calculator__button--clear">Clear</button>
+          <button class="calculator__button calculator__option calculator__button--clear">CA</button>
+          <button class="calculator__button calculator__option calculator__button--undo">CE</button>
         </div>                                 
         <div class="calculator__numbers">                  
           <div class="numbers__row">           
@@ -32,15 +35,16 @@
             <button class="calculator__button  calculator__button--number calculator__button--3">3</button>
           </div>                               
           <div class="numbers__row">           
+            <button class="calculator__button  calculator__button--special calculator__button--dot">.</button>
             <button class="calculator__button  calculator__button--number calculator__button--0">0</button>
+            <button class="calculator__button  calculator__button--special calculator__button--equal" value="equals">=</button>
           </div>                               
         </div>                                 
         <div class="calculator__operators">                
           <button class="calculator__button calculator__button--operator calculator__button--add" value="add">+</button>
           <button class="calculator__button calculator__button--operator calculator__button--subtract" value="subtract">-</button>
-          <button class="calculator__button calculator__button--operator calculator__button--multiply" value="multiply">&times</button>
-          <button class="calculator__button calculator__button--operator calculator__button--divide" value="divide">&divide</button>
-          <button class="calculator__button calculator__button--operator calculator__button--equal" value="equals">=</button>
+          <button class="calculator__button calculator__button--operator calculator__button--multiply" value="multiply">&times;</button>
+          <button class="calculator__button calculator__button--operator calculator__button--divide" value="divide">&divide;</button>
         </div>                                 
       </div>                                   
     </div>
